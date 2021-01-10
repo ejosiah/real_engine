@@ -1,0 +1,6 @@
+namespace real{
+
+    class GraphicsContext{
+
+    };
+}
