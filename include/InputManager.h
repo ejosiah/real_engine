@@ -1,4 +1,5 @@
 #include <string_view>
+#include "Scene.h"
 
 namespace real{
 
@@ -58,5 +59,9 @@ namespace real{
 
     class InputManager{
 
+    public:
+        void processEvents();
+
+        void init(const Scene& scene);
     };
 }

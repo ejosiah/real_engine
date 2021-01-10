@@ -20,6 +20,8 @@ namespace real{
 
         virtual WindowResult init() = 0;
 
+        virtual void pollEvents() = 0;
+
         virtual void terminate() = 0;
 
         [[nodiscard]] virtual bool isVisible() const = 0;
