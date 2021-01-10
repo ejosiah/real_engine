@@ -87,7 +87,14 @@ namespace real{
             keyEvent.modifierFlags |= KeyModifierFlagBits::SUPER;
         }
         keyEvent.key = static_cast<real::Key>(key);
-        self.fireKeyPress(keyEvent);
+
+        if(action == GLFW_PRESS){
+            self.fireKeyPress(keyEvent);
+        }else if(action == GLFW_RELEASE){
+            self.fireKeyRelease(keyEvent);
+        }else if(action == GLFW_REPEAT){
+            // TODO implement
+        }
     }
 
     void GlfwWindow::onMouseMove(GLFWwindow *window, double x, double y) {
