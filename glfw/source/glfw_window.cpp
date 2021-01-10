@@ -2,7 +2,7 @@
 
 namespace real{
 
-    GlfwWindow::GlfwWindow(std::string title, glm::vec2 dim, bool full)
+    GlfwWindow::GlfwWindow(std::string_view title, glm::vec2 dim, bool full)
     : title(title)
     , dimensions(dim)
     , fullscreen(full)

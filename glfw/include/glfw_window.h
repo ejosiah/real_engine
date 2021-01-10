@@ -5,10 +5,9 @@
 #include <glm/vec2.hpp>
 
 namespace real{
-    class GlfwWindow : Window {
-
-
-        GlfwWindow(std::string title, glm::vec2 dim, bool full = false);
+    class GlfwWindow : public Window {
+    public:
+        GlfwWindow(std::string_view title, glm::vec2 dim, bool full = false);
 
         virtual ~GlfwWindow();
 
@@ -21,11 +20,11 @@ namespace real{
         };
 
 
-        [[nodiscard]] virtual GraphicsContext getContext() const {
-            return {};
+        [[nodiscard]] virtual const GraphicsContext& getContext()  const override {
+            return gc;
         };
 
-        [[nodiscard]] glm::vec2 getWindowSize() const {
+        [[nodiscard]] glm::vec2 getWindowSize()  const override {
             int width, height;
             glfwGetFramebufferSize(window, &width, &height);
             return {width, height};
@@ -51,5 +50,8 @@ namespace real{
         bool fullscreen;
         GLFWwindow* window;
         GLFWmonitor* monitor;
+
+    private:
+        GraphicsContext gc;
     };
 }

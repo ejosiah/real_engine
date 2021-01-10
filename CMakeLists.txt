@@ -60,6 +60,7 @@ add_definitions(
 include_directories(include)
 include_directories(glfw)
 include_directories(glfw/include)
+include_directories(vulkan/include)
 
 
 # Gather list of header and source files for compilation
@@ -68,6 +69,9 @@ file(GLOB_RECURSE HPP_FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/*.*)
 
 file(GLOB_RECURSE GLFW_CPP_FILES ${CMAKE_CURRENT_SOURCE_DIR}/glfw/source/*.cpp)
 file(GLOB_RECURSE GLFW_HPP_FILES ${CMAKE_CURRENT_SOURCE_DIR}/glfw/include/*.*)
+
+file(GLOB_RECURSE VULKAN_CPP_FILES ${CMAKE_CURRENT_SOURCE_DIR}/vulkan/source/*.cpp)
+file(GLOB_RECURSE VULKAN_HPP_FILES ${CMAKE_CURRENT_SOURCE_DIR}/vulkan/include/*.*)
 
 # vulkan-1 library for build Vulkan application.
 set(VULKAN_LIB_LIST "vulkan-1")
@@ -87,7 +91,7 @@ conan_basic_setup()
 
 set(ALL_LIBS ${CONAN_LIBS} ${VULKAN_LIB_LIST})
 
-add_library(real_engine ${HPP_FILES} ${GLFW_HPP_FILES} ${CPP_FILES} ${GLFW_CPP_FILES})
+add_library(real_engine ${HPP_FILES} ${GLFW_HPP_FILES} ${VULKAN_HPP_FILES} ${CPP_FILES} ${GLFW_CPP_FILES} ${VULKAN_CPP_FILES})
 target_link_libraries(real_engine ${ALL_LIBS})
 
 add_executable(real_engine_test EXCLUDE_FROM_ALL source/main.cpp)

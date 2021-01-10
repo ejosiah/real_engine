@@ -10,7 +10,6 @@ namespace real{
     class Window{
     public:
 
-
         enum class Status{
             SUCCESS, FAILURE
         };
@@ -25,7 +24,7 @@ namespace real{
 
         [[nodiscard]] virtual bool isVisible() const = 0;
 
-        [[nodiscard]] virtual GraphicsContext getContext() const = 0;
+        [[nodiscard]] virtual const GraphicsContext& getContext() const = 0;
 
         [[nodiscard]] virtual glm::vec2 getWindowSize() const = 0;
 

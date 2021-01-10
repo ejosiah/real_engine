@@ -1,0 +1,3 @@
+namespace real {
+    class Renderer{};
+}
