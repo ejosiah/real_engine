@@ -15,10 +15,10 @@ namespace real{
     GlfwWindow::~GlfwWindow(){
         if(window){
             glfwSetWindowShouldClose(window, GLFW_TRUE);
+            glfwDestroyWindow(window);
+            glfwTerminate();
+            window = nullptr;
         }
-        glfwDestroyWindow(window);
-        glfwTerminate();
-        window = nullptr;
     }
 
     Window::WindowResult GlfwWindow::init() {
@@ -28,10 +28,10 @@ namespace real{
        auto status = glfwInit();
 
        if(!status) return { "Glfw initialization failed", Status::FAILURE};
-       setWindowHints();
-       monitor = fullscreen ? glfwGetPrimaryMonitor() : nullptr;
 
        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+       setWindowHints();
+       monitor = fullscreen ? glfwGetPrimaryMonitor() : nullptr;
        window = glfwCreateWindow(dimensions.x, dimensions.y, title.c_str(), monitor, nullptr);
 
        if(!window){
@@ -49,6 +49,13 @@ namespace real{
        return { "GLFW successfully initialized", Status::SUCCESS};
     }
 
+    void GlfwWindow::terminate() {
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        window = nullptr;
+    }
+
     GlfwWindow& GlfwWindow::getSelf(GLFWwindow *window) {
         return *reinterpret_cast<GlfwWindow*>(glfwGetWindowUserPointer(window));
     }
@@ -59,6 +66,28 @@ namespace real{
 
     void GlfwWindow::onKeyPress(GLFWwindow *window, int key, int scanCode, int action, int mods) {
         auto self = getSelf(window);
+        auto& keyEvent = self.keyEvent;
+        keyEvent.modifierFlags = KeyModifierFlagBits::NONE;
+        if(mods & GLFW_MOD_SHIFT){
+            keyEvent.modifierFlags |= KeyModifierFlagBits::SHIFT;
+        }
+        if(mods & GLFW_MOD_ALT) {
+            keyEvent.modifierFlags |= KeyModifierFlagBits::ALT;
+        }
+        if(mods & GLFW_MOD_CAPS_LOCK){
+            keyEvent.modifierFlags |= KeyModifierFlagBits::CAPS_LOCK;
+        }
+        if(mods & GLFW_MOD_CONTROL){
+            keyEvent.modifierFlags |= KeyModifierFlagBits::CONTROL;
+        }
+        if(mods & GLFW_MOD_NUM_LOCK){
+            keyEvent.modifierFlags |= KeyModifierFlagBits::NUM_LOCK;
+        }
+        if(mods & GLFW_MOD_SUPER){
+            keyEvent.modifierFlags |= KeyModifierFlagBits::SUPER;
+        }
+        keyEvent.key = static_cast<real::Key>(key);
+        self.fireKeyPress(keyEvent);
     }
 
     void GlfwWindow::onMouseMove(GLFWwindow *window, double x, double y) {

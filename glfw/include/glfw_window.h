@@ -14,6 +14,8 @@ namespace real{
 
         virtual WindowResult init() override;
 
+        virtual void terminate() override;
+
         [[nodiscard]] bool isVisible() const override {
             return window != nullptr;
         };

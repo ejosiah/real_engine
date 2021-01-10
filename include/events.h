@@ -1,12 +1,14 @@
 #include <glm/vec2.hpp>
 #include <functional>
 #include "real_common.h"
+#include "keys.h"
 
 namespace real{
 
     using KeyModiferFlags = Flags;
 
-    enum KeyModifierFlagBits{
+    enum KeyModifierFlagBits : unsigned int{
+        NONE = 0,
         SHIFT = 0x0001,
         CONTROL = 0x0002,
         ALT = 0x0004,
@@ -16,9 +18,18 @@ namespace real{
     };
 
     struct KeyEvent{
-        char keyValue;
-        int keyCode;
+        Key key;
         KeyModiferFlags modifierFlags;
+
+        [[nodiscard]]
+        inline int getCode() const{
+            return static_cast<int>(key);
+        }
+
+        [[nodiscard]]
+        inline int getChar() const{
+            return static_cast<char>(key);
+        }
     };
 
     struct MouseEvent{
@@ -45,9 +56,12 @@ namespace real{
         glm::vec2 extent;
     };
 
+    struct ShutdownEvent;
+
     using KeyPressListener = std::function<void(const KeyEvent&)>;
     using KeyReleaseListener = KeyPressListener;
     using MouseMoveListener = std::function<void(const MouseEvent&)>;
     using MouseClickListener = MouseMoveListener;
     using WindowResizeListener = std::function<void(const ResizeEvent&)>;
+    using ShutdownEventListener = std::function<void(const ShutdownEvent&)>;
 }
