@@ -1,13 +1,27 @@
 #include "VulkanWindow.h"
 
-namespace real {
+namespace vkn {
 
-    VulkanWindow::VulkanWindow(std::string_view title, glm::vec2 dim, bool full, bool debug)
-    : GlfwWindow(title, dim, full)
+    real::Either_t<VkSurfaceKHR> VulkanGraphicsContext::getSurface(VkInstance instance) {
+        if(surface != VK_NULL_HANDLE){
+            return std::make_tuple(real::Result{"Surface created", real::Status::SUCCESS}, surface);
+        }
+        auto result = glfwCreateWindowSurface(instance, window, nullptr, &surface);
+        if(result != VK_SUCCESS) {
+            return std::make_tuple(
+                    real::Result{"Unable to create Surface", real::Status::FAILURE}
+                    , surface);
+        }
+
+        return std::make_tuple(real::Result{"Surface created", real::Status::SUCCESS}, surface);
+    }
+
+    VulkanWindow::VulkanWindow(std::string_view title, glm::vec2 dim, real::Settings settings, bool debug)
+    : GlfwWindow(title, dim, settings)
     , debugEnabled(debug)
     {}
 
-    Window::WindowResult VulkanWindow::init() {
+    real::Result VulkanWindow::init() {
         auto result = GlfwWindow::init();
         uint32_t count;
         auto glfwExtensions = glfwGetRequiredInstanceExtensions(&count);

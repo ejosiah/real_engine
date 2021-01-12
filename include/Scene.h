@@ -1,15 +1,33 @@
+#pragma once
+
+#include "real_common.h"
 #include <glm/glm.hpp>
+#include "Camera.h"
 
 namespace real {
 
     class Scene{
     public:
-        virtual void init(){};
+        explicit Scene(std::string_view name);
 
-        bool requireMouse() const;
+        virtual Result init();
+
+        [[nodiscard]] inline std::string_view name() const{
+            return _name;
+        }
+
+        inline const Camera& camera(){
+            return activeCam->camera();
+        }
 
         void update(float time);
 
-        void resize(const glm::vec2 dimensions);
+        void resize(glm::vec2 dimensions);
+
+    private:
+        std::string_view _name;
+        CameraController* activeCam;
+        std::vector<CameraController> cameras;
+
     };
 }

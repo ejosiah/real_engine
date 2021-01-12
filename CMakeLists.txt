@@ -61,6 +61,7 @@ include_directories(include)
 include_directories(glfw)
 include_directories(glfw/include)
 include_directories(vulkan/include)
+include_directories(external)
 
 
 # Gather list of header and source files for compilation
@@ -91,8 +92,9 @@ conan_basic_setup()
 
 set(ALL_LIBS ${CONAN_LIBS} ${VULKAN_LIB_LIST})
 
+add_library(vma "external/vk_mem_alloc.h" "external/vk_mem_alloc.cpp")
 add_library(real_engine ${HPP_FILES} ${GLFW_HPP_FILES} ${VULKAN_HPP_FILES} ${CPP_FILES} ${GLFW_CPP_FILES} ${VULKAN_CPP_FILES})
-target_link_libraries(real_engine ${ALL_LIBS})
+target_link_libraries(real_engine ${ALL_LIBS} vma)
 
 add_executable(real_engine_test EXCLUDE_FROM_ALL source/main.cpp)
 target_link_libraries(real_engine_test real_engine)

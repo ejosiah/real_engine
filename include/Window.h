@@ -1,7 +1,6 @@
 #pragma once
 
-#include <vector>
-#include <glm/glm.hpp>
+#include <real_common.h>
 #include "events.h"
 #include "GraphicsContext.h"
 
@@ -10,25 +9,29 @@ namespace real{
     class Window{
     public:
 
-        enum class Status{
-            SUCCESS, FAILURE
-        };
-
-        using WindowResult = ResultType<Status>;
-
         virtual ~Window() = default;
 
-        virtual WindowResult init() = 0;
+        virtual Result init() = 0;
 
-        virtual void pollEvents() = 0;
+        virtual void pollEvents() const = 0;
 
         virtual void terminate() = 0;
+
+        [[nodiscard]] inline bool resized() const {
+            return _windowResized;
+        };
+
+        inline void resized(bool val) {
+            _windowResized = val;
+        }
 
         [[nodiscard]] virtual bool isVisible() const = 0;
 
         [[nodiscard]] virtual const GraphicsContext& getContext() const = 0;
 
-        [[nodiscard]] virtual glm::vec2 getWindowSize() const = 0;
+        [[nodiscard]] inline glm::vec2 getWindowSize() const {
+            return _dimensions;
+        };
 
         inline void addMouseClickListener(MouseClickListener&& listener){
             mouseClickListeners.push_back(listener);
@@ -50,6 +53,7 @@ namespace real{
             windowResizeListeners.push_back(listener);
         }
 
+    protected:
         inline void fireWindowResize(const ResizeEvent& event){
             for(auto& listener : windowResizeListeners){
                 listener(event);
@@ -84,6 +88,8 @@ namespace real{
         MouseEvent mouseEvent;
         KeyEvent keyEvent;
         ResizeEvent resizeEvent;
+        bool _windowResized = false;
+        glm::vec2 _dimensions;
 
     private:
         std::vector<MouseClickListener> mouseClickListeners;

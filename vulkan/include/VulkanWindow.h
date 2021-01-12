@@ -1,26 +1,36 @@
 #pragma once
 
+
 #include <vector>
+#include "vulkan_common.h"
 #include "glfw_window.h"
 #include <vulkan/vulkan.h>
 
-namespace real {
+namespace vkn {
 
-    struct VulkanGraphicsContext : public GraphicsContext{
+
+
+    struct VulkanGraphicsContext : public real::GraphicsContext{
+        GLFWwindow * window = nullptr;
         std::vector<const char*> instanceExtensions;
+
+        real::Either_t<VkSurfaceKHR> getSurface(VkInstance instance);
+
+    private:
+        VkSurfaceKHR  surface = VK_NULL_HANDLE;
     };
 
-    class VulkanWindow : public GlfwWindow{
+    class VulkanWindow : public real::GlfwWindow{
     public:
-        VulkanWindow(std::string_view title, glm::vec2 dim, bool full = false, bool debug = false);
+        VulkanWindow(std::string_view title, glm::vec2 dim, real::Settings settings, bool debug = false);
 
-        WindowResult init() override;
+        real::Result init() override;
 
-        [[nodiscard]] virtual const  VulkanGraphicsContext& getContext()  const override{
+        [[nodiscard]] const  VulkanGraphicsContext& getContext()  const override{
             return graphicsContext;
         }
 
-        virtual void setWindowHints() override;
+        void setWindowHints() override;
 
     private:
         VulkanGraphicsContext graphicsContext;

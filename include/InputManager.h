@@ -62,6 +62,6 @@ namespace real{
     public:
         void processEvents();
 
-        void init(const Scene& scene);
+        Result init(const Scene& scene);
     };
 }

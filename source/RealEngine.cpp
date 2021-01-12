@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "RealEngine.h"
 
 namespace real {
@@ -15,20 +16,32 @@ namespace real {
     }
 
     void RealEngine::init() {
-        window->init();
-        scene->init();
-        inputManager.init(*scene);
-        renderer->init(window->getContext(), *scene);
+        REPORT_ERROR(window->init());
+        REPORT_ERROR(scene->init());
+        REPORT_ERROR(inputManager.init(*scene));
+        REPORT_ERROR(renderer->init(window->getContext(), *scene));
     }
 
     void RealEngine::mainLoop() {
         while(window->isVisible()){
+            if(window->resized()){
+                window->resized(false);
+                scene->resize(window->getWindowSize());
+                renderer->resize(window->getWindowSize());
+                continue;
+            }
+
             window->pollEvents();
             inputManager.processEvents();
+
             // TODO timer update
             float currentTime = 0;
             scene->update(currentTime);
             renderer->render(*scene);
         }
+    }
+
+    void RealEngine::shutdown() {
+
     }
 }

@@ -2,10 +2,10 @@
 
 namespace real{
 
-    GlfwWindow::GlfwWindow(std::string_view title, glm::vec2 dim, bool full)
+    GlfwWindow::GlfwWindow(std::string_view title, glm::vec2 dim, Settings settings)
     : title(title)
     , dimensions(dim)
-    , fullscreen(full)
+    , settings(settings)
     , window(nullptr)
     , monitor(nullptr)
     {
@@ -21,7 +21,7 @@ namespace real{
         }
     }
 
-    Window::WindowResult GlfwWindow::init() {
+    Result GlfwWindow::init() {
 
         glfwSetErrorCallback(OnError);
 
@@ -31,7 +31,7 @@ namespace real{
 
        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
        setWindowHints();
-       monitor = fullscreen ? glfwGetPrimaryMonitor() : nullptr;
+       monitor = settings.fullscreen ? glfwGetPrimaryMonitor() : nullptr;
        window = glfwCreateWindow(dimensions.x, dimensions.y, title.c_str(), monitor, nullptr);
 
        if(!window){
@@ -65,7 +65,7 @@ namespace real{
     }
 
     void GlfwWindow::onKeyPress(GLFWwindow *window, int key, int scanCode, int action, int mods) {
-        auto self = getSelf(window);
+        auto& self = getSelf(window);
         auto& keyEvent = self.keyEvent;
         keyEvent.modifierFlags = KeyModifierFlagBits::NONE;
         if(mods & GLFW_MOD_SHIFT){
@@ -98,14 +98,14 @@ namespace real{
     }
 
     void GlfwWindow::onMouseMove(GLFWwindow *window, double x, double y) {
-        auto self = getSelf(window);
+        auto& self = getSelf(window);
         self.mouseEvent.pos.x = static_cast<float>(x);
         self.mouseEvent.pos.y = static_cast<float>(y);
         self.fireMouseMove(self.mouseEvent);
     }
 
     void GlfwWindow::onMouseClick(GLFWwindow *window, int button, int action, int mods) {
-        auto self = getSelf(window);
+        auto& self = getSelf(window);
         auto& mouseEvent = self.mouseEvent;
         switch(button){
             case GLFW_MOUSE_BUTTON_LEFT:
@@ -136,10 +136,17 @@ namespace real{
     }
 
     void GlfwWindow::onWindowResize(GLFWwindow *window, int width, int height) {
-        auto self = getSelf(window);
-        self.resizeEvent.extent.x = static_cast<float>(width);
-        self.resizeEvent.extent.y = static_cast<float>(height);
+        auto& self = getSelf(window);
+        self.resized(true);
+        self._dimensions.x = static_cast<float>(width);
+        self.dimensions.y = static_cast<float>(height);
+        self.resizeEvent.extent.x = self.dimensions.x;
+        self.resizeEvent.extent.y = self.dimensions.y;
         self.fireWindowResize(self.resizeEvent);
+    }
+
+    void GlfwWindow::pollEvents() const {
+        glfwPollEvents();
     }
 
 }

@@ -3,31 +3,27 @@
 #include "Window.h"
 #include "GLFW/glfw3.h"
 #include <glm/vec2.hpp>
+#include "Settings.h"
 
 namespace real{
     class GlfwWindow : public Window {
     public:
-        GlfwWindow(std::string_view title, glm::vec2 dim, bool full = false);
+        GlfwWindow(std::string_view title, glm::vec2 dim, Settings settings);
 
         virtual ~GlfwWindow();
 
-        virtual WindowResult init() override;
+        Result init() override;
 
-        virtual void terminate() override;
+        void terminate() override;
 
         [[nodiscard]] bool isVisible() const override {
             return window != nullptr;
         };
 
+        void pollEvents() const override;
 
-        [[nodiscard]] virtual const GraphicsContext& getContext()  const override {
+        [[nodiscard]] const GraphicsContext& getContext()  const override {
             return gc;
-        };
-
-        [[nodiscard]] glm::vec2 getWindowSize()  const override {
-            int width, height;
-            glfwGetFramebufferSize(window, &width, &height);
-            return {width, height};
         };
 
         virtual void setWindowHints(){};
@@ -47,7 +43,7 @@ namespace real{
     protected:
         std::string title;
         glm::vec2 dimensions;
-        bool fullscreen;
+        Settings settings;
         GLFWwindow* window;
         GLFWmonitor* monitor;
 

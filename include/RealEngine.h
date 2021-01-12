@@ -24,5 +24,6 @@ namespace real {
         std::unique_ptr<Window> window;
         std::unique_ptr<Scene> scene;
         InputManager inputManager;
+        bool windowResized;
     };
 }
